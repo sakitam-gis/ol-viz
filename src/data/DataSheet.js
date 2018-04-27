@@ -3,7 +3,7 @@ import ol from 'openlayers';
 class DataSheet extends ol.Object {
   constructor (data, options = {}) {
     super(options);
-    this._data = data;
+    this._data = [];
     if (data) {
       this.add(data);
     }
@@ -47,7 +47,7 @@ class DataSheet extends ol.Object {
   /**
    * get data.
    */
-  get (args) {
+  getData (args) {
     args = args || {};
     let data = this._data;
     if (args.filter) {
@@ -112,7 +112,7 @@ class DataSheet extends ol.Object {
   /**
    * set data.
    */
-  set (data) {
+  setData (data) {
     this._set(data);
     this.dispatchEvent({
       type: 'reset',

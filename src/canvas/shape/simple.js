@@ -3,7 +3,7 @@ import DataSheet from '../../data/DataSheet';
 
 export default {
   draw: function (context, dataSet, options) {
-    const data = dataSet instanceof DataSheet ? dataSet.get() : dataSet;
+    const data = dataSet instanceof DataSheet ? dataSet.getData() : dataSet;
     context.save();
     for (let key in options) {
       context[key] = options[key];

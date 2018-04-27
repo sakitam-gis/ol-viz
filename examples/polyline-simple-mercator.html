@@ -33,8 +33,8 @@
     loadTilesWhileAnimating: true,
     pixelRatio: 1,
     view: new ol.View({
-      projection: 'EPSG:4326',
-      center: [113.53450137499999, 34.44104525],
+      projection: 'EPSG:3857',
+      center: [11682023.906880058, 4121484.5651367037],
       zoom: 5
     })
   });
@@ -42,14 +42,21 @@
     {
       geometry: {
         type: 'LineString',
-        coordinates: [[113.53450137499999, 34.44104525], [114.53450137499999, 32.44104525]]
+        coordinates: [[12953936.05754539, 4852834.051769271], [12709337.567032827, 2553608.240951169]]
       },
       count: 30 * Math.random()
     },
     {
       geometry: {
         type: 'LineString',
-        coordinates: [[114.53450137499999, 32.44104525], [112.53450137499999, 34.44104525]]
+        coordinates: [[12709337.567032827, 2553608.240951169], [9749695.831830803, 5415410.579948168]]
+      },
+      count: 30 * Math.random()
+    },
+    {
+      geometry: {
+        type: 'LineString',
+        coordinates: [[9749695.831830803, 5415410.579948168], [12953936.05754539, 4852834.051769271]]
       },
       count: 30 * Math.random()
     }

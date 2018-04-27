@@ -74,8 +74,8 @@ class Layer extends ol.layer.Image {
       attributions: options.attributions,
       resolutions: options.resolutions,
       canvasFunction: this.canvasFunction.bind(this),
-      projection: (options.hasOwnProperty('projection') ? options.projection : 'EPSG:3857'),
-      ratio: (options.hasOwnProperty('ratio') ? options.ratio : 1)
+      projection: (options.hasOwnProperty('projection') ? options.projection : ''),
+      ratio: (options.hasOwnProperty('ratio') ? options.ratio : getDevicePixelRatio())
     }));
 
     this.on('precompose', this.redraw, this);
@@ -226,8 +226,8 @@ class Layer extends ol.layer.Image {
     if (!this._canvas) {
       this._canvas = createCanvas(size[0], size[1])
     } else {
-      this._canvas.width = size[0]
-      this._canvas.height = size[1]
+      this._canvas.width = size[0];
+      this._canvas.height = size[1];
     }
     if (resolution <= this.get('maxResolution')) {
       this.render()
@@ -250,7 +250,6 @@ class Layer extends ol.layer.Image {
       this._initEvent();
       this.initAnimator();
     }
-    const _projection = this.options.hasOwnProperty('projection') ? this.options.projection : 'EPSG:4326';
     if (this.isEnabledTime()) {
       if (time === undefined) {
         clearRect(context);
@@ -276,7 +275,7 @@ class Layer extends ol.layer.Image {
     }
     const dataGetOptions = {
       transferCoordinate: function (coordinate) {
-        return map.getPixelFromCoordinate(ol.proj.transform(coordinate, _projection, 'EPSG:4326'));
+        return map.getPixelFromCoordinate(coordinate);
       }
     };
 
@@ -291,7 +290,7 @@ class Layer extends ol.layer.Image {
       }
     }
 
-    const data = this.options.data.get(dataGetOptions);
+    const data = this.options.data.getData(dataGetOptions);
     this.processData(data);
     this.drawContext(context, new DataSheet(data), this.options, {x: 0, y: 0});
     this.dispatchEvent({
@@ -343,7 +342,7 @@ class Layer extends ol.layer.Image {
    */
   isPointInPath (pixel) {
     const context = this.getContext();
-    const data = this.options.data.get();
+    const data = this.options.data.getData();
     const devicePixelRatio = getDevicePixelRatio();
     for (let i = 0; i < data.length; i++) {
       context.beginPath();

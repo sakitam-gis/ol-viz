@@ -2,7 +2,7 @@ import DataSheet from '../../data/DataSheet';
 
 export default {
   drawDataSet: function (context, dataSet, options) {
-    const data = dataSet instanceof DataSheet ? dataSet.get() : dataSet;
+    const data = dataSet instanceof DataSheet ? dataSet.getData() : dataSet;
     for (let i = 0, len = data.length; i < len; i++) {
       let item = data[i];
       this.draw(context, item, options);
