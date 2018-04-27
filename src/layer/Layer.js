@@ -120,8 +120,8 @@ class Layer extends ol.layer.Image {
         }
       }
       this.steps = {step: animationOptions.stepsRange.start};
-      this.animator = new TWEEN.Tween(this.steps).onUpdate(() => {
-        this._canvasUpdate(this.step);
+      this.animator = new TWEEN.Tween(that.steps).onUpdate(function (event) {
+        that._canvasUpdate(event.step);
       }).repeat(Infinity);
       this.addAnimatorEvent();
       const duration = animationOptions.duration * 1000 || 5000;
@@ -132,8 +132,7 @@ class Layer extends ol.layer.Image {
     }
     (function frame () {
       that._animationLoop = window.requestAnimFrame(frame);
-      const now = Date.now();
-      TWEEN.update(now)
+      TWEEN.update()
     })();
   }
 
@@ -247,6 +246,7 @@ class Layer extends ol.layer.Image {
     const context = this.getContext();
     const animationOptions = this.options.animation;
     if (!this._isRenderer) {
+      this._isRenderer = true;
       this._initEvent();
       this.initAnimator();
     }
