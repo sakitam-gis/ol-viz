@@ -288,11 +288,41 @@ const bind = function (fn, context) {
   };
 };
 
+/**
+ * scale canvas
+ * @param context
+ */
+const scaleCanvas = function (context) {
+  const devicePixelRatio = getDevicePixelRatio();
+  context.canvas.width = context.canvas.width * devicePixelRatio;
+  context.canvas.height = context.canvas.height * devicePixelRatio;
+  context.canvas.style.width = context.canvas.width / devicePixelRatio + 'px';
+  context.canvas.style.height = context.canvas.height / devicePixelRatio + 'px';
+  context.scale(devicePixelRatio, devicePixelRatio);
+};
+
+/**
+ * clear context react
+ * @param context
+ */
+const clearRect = function (context) {
+  context && context.clearRect && context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+};
+
+/**
+ * get pixel ratio
+ * @returns {number}
+ */
+const getDevicePixelRatio = function () {
+  return  window.devicePixelRatio || 1;
+};
+
 export {
   bind,
   isDate,
   isNode,
   isBrowser,
+  clearRect,
   stamp,
   uuid,
   merge,
@@ -309,5 +339,7 @@ export {
   checkBrowser,
   encode,
   isArrayBuffer,
-  isURLSearchParams
+  scaleCanvas,
+  isURLSearchParams,
+  getDevicePixelRatio
 }

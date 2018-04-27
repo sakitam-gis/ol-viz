@@ -44,12 +44,16 @@ const genConfig = (opts) => {
           browser: true
         }),
         cjs()
-      ]
+      ],
+      external: ['openlayers']
     },
     output: {
       file: opts.file,
       format: opts.format,
       banner,
+      globals: {
+        openlayers: 'ol'
+      },
       name: _package.namespace
     }
   }
