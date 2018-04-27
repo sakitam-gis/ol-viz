@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ol example</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../node_modules/openlayers/dist/ol.css">
+  <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+  <style>
+    html, body, #map {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="../node_modules/openlayers/dist/ol.js"></script>
+<script src="../dist/ol-viz.js"></script>
+<script>
+  var map = new ol.Map({
+    target: 'map',
+    layers: [
+      new ol.layer.Tile({
+        layerName: 'baseLayer',
+        preload: 4,
+        source: new ol.source.OSM({
+          url: 'http://{a-e}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
+        })
+      })
+    ],
+    loadTilesWhileAnimating: true,
+    pixelRatio: 1,
+    view: new ol.View({
+      projection: 'EPSG:4326',
+      center: [113.53450137499999, 34.44104525],
+      zoom: 5
+    })
+  });
+  var layer = new olViz.Layer({
+    map: map,
+    fillStyle: 'rgba(163, 204, 255, 0.5)',
+    strokeStyle: 'rgba(86, 149, 246, 0.5)',
+    shadowColor: 'rgba(86, 149, 246, 0.5)',
+    shadowBlur: 1,
+    lineWidth: 0.7,
+    draw: 'simple',
+    data: [
+      {
+        geometry: {
+          type: 'Polygon',
+          coordinates:[
+            [
+              [
+                114.7210069508,
+                33.748298303665
+              ],
+              [
+                114.7210069508,
+                33.50312447933
+              ],
+              [
+                114.88399525335,
+                33.50312447933
+              ],
+              [
+                114.88399525335,
+                33.748298303665
+              ]
+            ]
+          ]
+        },
+        count: 10
+      },
+      {
+        geometry: {
+          type: 'Polygon',
+          coordinates:[
+            [
+              [
+                118.89549152035,
+                26.199075983618
+              ],
+              [
+                118.89549152035,
+                26.028547090778
+              ],
+              [
+                119.42410754515,
+                26.028547090778
+              ],
+              [
+                119.42410754515,
+                26.199075983618
+              ]
+            ]
+          ]
+        },
+        count: 20
+      }
+    ]
+  });
+  map.addLayer(layer);
+  map.on('click', function (event) {
+    console.log(event);
+  })
+</script>
+</body>
+</html>
