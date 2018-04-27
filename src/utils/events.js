@@ -9,7 +9,7 @@ import { stamp } from './common'
  */
 const getDomEventKey = (type, fn, context) => {
   return '_dom_event_' + type + '_' + stamp(fn) + (context ? '_' + stamp(context) : '')
-}
+};
 
 /**
  * 对DOM对象添加事件监听
@@ -31,15 +31,15 @@ const addListener = function (element, type, fn, context, isOnce) {
   }
   handler = function (e) {
     return fn.call(context || element, e)
-  }
+  };
   if ('addEventListener' in element) {
     element.addEventListener(type, handler, false)
   } else if ('attachEvent' in element) {
     element.attachEvent('on' + type, handler)
   }
-  element[eventKey] = handler
+  element[eventKey] = handler;
   return this
-}
+};
 
 const on = addListener;
 
@@ -64,7 +64,7 @@ const removeListener = function (element, type, fn, context) {
   }
   element[eventKey] = null
   return this
-}
+};
 
 const off = removeListener;
 
@@ -78,7 +78,7 @@ const off = removeListener;
  */
 const once = function (element, type, fn, context) {
   return addListener(element, type, fn, context, true)
-}
+};
 
 /**
  * Prevent default behavior of the browser.
@@ -92,7 +92,7 @@ const preventDefault = function (event) {
     event.returnValue = false
   }
   return this
-}
+};
 
 /**
  * Stop browser event propagation
@@ -106,7 +106,7 @@ const stopPropagation = function (event) {
     event.cancelBubble = true
   }
   return this
-}
+};
 
 export {
   on,

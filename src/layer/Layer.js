@@ -1,6 +1,6 @@
 import ol from 'openlayers';
 import TWEEN from '@tweenjs/tween.js';
-import DataSet from '../data/DataSet';
+import DataSheet from '../data/DataSheet';
 import drawSimple from '../canvas/shape/simple';
 import pathSimple from '../canvas/path/simple';
 import { createCanvas, clearRect, getDevicePixelRatio } from '../utils'
@@ -28,8 +28,8 @@ const CONTEXT_CONFIG = {
 class Layer extends ol.layer.Image {
   constructor (options = {}) {
     super(options);
-    if (!(options.data instanceof DataSet)) {
-      options.data = new DataSet(options.data);
+    if (!(options.data instanceof DataSheet)) {
+      options.data = new DataSheet(options.data);
     }
 
     /**
@@ -51,6 +51,13 @@ class Layer extends ol.layer.Image {
      * @private
      */
     this._isRenderer = false;
+
+    /**
+     * 默认鼠标样式
+     * @type {string}
+     * @private
+     */
+    this.previousCursor_ = '';
 
     /**
      * animate
@@ -145,7 +152,7 @@ class Layer extends ol.layer.Image {
    * @private
    */
   _animatorMovestartEvent () {
-    var animationOptions = this.options.animation;
+    const animationOptions = this.options.animation;
     if (this.isEnabledTime() && this.animator) {
       this.steps.step = animationOptions.stepsRange.start;
       this.animator.stop();
@@ -240,6 +247,7 @@ class Layer extends ol.layer.Image {
     const context = this.getContext();
     const animationOptions = this.options.animation;
     if (!this._isRenderer) {
+      this._initEvent();
       this.initAnimator();
     }
     const _projection = this.options.hasOwnProperty('projection') ? this.options.projection : 'EPSG:4326';
@@ -285,7 +293,7 @@ class Layer extends ol.layer.Image {
 
     const data = this.options.data.get(dataGetOptions);
     this.processData(data);
-    this.drawContext(context, new DataSet(data), this.options, {x: 0, y: 0});
+    this.drawContext(context, new DataSheet(data), this.options, {x: 0, y: 0});
     this.dispatchEvent({
       type: 'render',
       target: this,
@@ -340,8 +348,8 @@ class Layer extends ol.layer.Image {
     for (let i = 0; i < data.length; i++) {
       context.beginPath();
       pathSimple.draw(context, data[i], this.options);
-      const x = pixel.x * devicePixelRatio;
-      const y = pixel.y * devicePixelRatio;
+      const x = pixel[0] * devicePixelRatio;
+      const y = pixel[1] * devicePixelRatio;
       /* eslint-disable */
       if (context.isPointInPath(x, y) || context.isPointInStroke && context.isPointInStroke(x, y)) {
         return data[i];
@@ -350,33 +358,51 @@ class Layer extends ol.layer.Image {
   }
 
   /**
+   * init event
+   * @private
+   */
+  _initEvent () {
+    const _map = this.getMap();
+    if (!_map) return;
+    _map.on('pointerdown', this._pointerDownEvent, this);
+    _map.on('pointermove', this._pointerMoveEvent, this);
+  }
+
+  /**
    * handle click/pointerdown
    * @param event
    */
-  clickEvent (event) {
+  _pointerDownEvent (event) {
     const pixel = event.pixel;
-    const dataItem = this.isPointInPath(this.getContext(), pixel);
-    this.dispatchEvent({
-      type: 'pointermove',
-      target: this,
-      event: event,
-      data: dataItem
-    });
+    const dataItem = this.isPointInPath(pixel);
+    if (dataItem) {
+      this.dispatchEvent({
+        type: 'pointermove',
+        target: this,
+        event: event,
+        data: dataItem
+      });
+    }
   }
 
   /**
    * handle mousemove / pointermove
    * @param event
    */
-  mousemoveEvent (event) {
+  _pointerMoveEvent (event) {
     const pixel = event.pixel;
-    const dataItem = this.isPointInPath(this.getContext(), pixel);
-    this.dispatchEvent({
-      type: 'pointermove',
-      target: this,
-      event: event,
-      data: dataItem
-    });
+    const dataItem = this.isPointInPath(pixel);
+    if (dataItem) {
+      this.setDefaultCursor('pointer', dataItem);
+      this.dispatchEvent({
+        type: 'pointermove',
+        target: this,
+        event: event,
+        data: dataItem
+      });
+    } else {
+      this.setDefaultCursor();
+    }
   }
 
   /**
@@ -401,7 +427,7 @@ class Layer extends ol.layer.Image {
    */
   setDefaultCursor (cursor, feature) {
     if (!this.getMap()) return;
-    const element = this.this.getMap().getTargetElement();
+    const element = this.getMap().getTargetElement();
     if (feature) {
       if (element.style.cursor !== cursor) {
         this.previousCursor_ = element.style.cursor;

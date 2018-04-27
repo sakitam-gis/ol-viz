@@ -1,9 +1,9 @@
 import pathSimple from '../path/simple';
-import DataSet from '../../data/DataSet';
+import DataSheet from '../../data/DataSheet';
 
 export default {
   draw: function (context, dataSet, options) {
-    const data = dataSet instanceof DataSet ? dataSet.get() : dataSet;
+    const data = dataSet instanceof DataSheet ? dataSet.get() : dataSet;
     context.save();
     for (let key in options) {
       context[key] = options[key];

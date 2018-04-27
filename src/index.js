@@ -1,13 +1,13 @@
 import './polyfill/assign';
 import './polyfill/requestAnimFrame';
-import geojson from './data/geojson';
-import DataSet from './data/DataSet';
+import GeoJSON from './data/GeoJSON';
+import DataSheet from './data/DataSheet';
 import Layer from './layer/Layer';
 import ajax from './utils/ajax'
 
 export {
   ajax,
   Layer,
-  geojson,
-  DataSet
+  GeoJSON,
+  DataSheet
 }

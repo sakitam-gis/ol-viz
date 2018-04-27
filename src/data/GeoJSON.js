@@ -1,4 +1,4 @@
-import DataSet from './DataSet';
+import DataSheet from './DataSheet';
 
 export default {
   getDataSet: function (geoJson) {
@@ -15,6 +15,6 @@ export default {
       item.geometry = geometry;
       data.push(item);
     }
-    return new DataSet(data);
+    return new DataSheet(data);
   }
 }
