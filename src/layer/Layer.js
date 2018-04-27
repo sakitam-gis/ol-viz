@@ -208,7 +208,7 @@ class Layer extends ol.layer.Image {
    * @private
    */
   _getMapSize () {
-    if (!this.getMap()) return
+    if (!this.getMap()) return;
     return this.getMap().getSize()
   }
 
@@ -409,14 +409,14 @@ class Layer extends ol.layer.Image {
    * @param map
    */
   setMap (map) {
-    ol.layer.Image.prototype.setMap.call(this, map);
+    this.set('_origin_map_', map)
   }
 
   /**
    * get map
    */
   getMap () {
-    return this.get('map')
+    return this.get('_origin_map_')
   }
 
   /**
