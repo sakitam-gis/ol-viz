@@ -1,7 +1,8 @@
 ---
-category: Article
-title: 快速开始
-order: 1
+title: Hello world!
+publishDate: 2016-05-05
+tags: 
+  - test
 ---
 
 [![Build Status](https://travis-ci.org/ElemeFE/react-amap.svg?branch=master)](https://travis-ci.org/ElemeFE/react-amap)
