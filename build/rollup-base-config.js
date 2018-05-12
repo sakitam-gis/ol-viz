@@ -4,34 +4,33 @@ const json = require('rollup-plugin-json');
 const cjs = require('rollup-plugin-commonjs');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const replace = require('rollup-plugin-replace');
-const eslint = require('rollup-plugin-eslint');
+const { eslint } = require('rollup-plugin-eslint');
 const friendlyFormatter = require('eslint-friendly-formatter');
 const _package = require('../package.json');
 const { handleMinEsm, resolve } = require('./helper');
-const eslintConfig = require('../.eslintrc');
+
 const time = new Date();
 const year = time.getFullYear();
 const banner = `/*!\n * author: ${_package.author} 
  * ${_package.name} v${_package.version}
  * build-time: ${year}-${time.getMonth() + 1}-${time.getDate()} ${time.getHours()}:${time.getMinutes()}
  * LICENSE: ${_package.license}
- * (c) 2018-${year} ${_package.homepage}\n */`;
+ * (c) 2017-${year} ${_package.homepage}\n */`;
+
 const genConfig = (opts) => {
   const config = {
     input: {
       input: resolve('src/index.js'),
       plugins: [
+        eslint({
+          configFile: resolve('.eslintrc.js'),
+          formatter: friendlyFormatter,
+          exclude: [resolve('node_modules')]
+        }),
         json({
           include: resolve('package.json'),
           indent: ' '
         }),
-        eslint(Object.assign({}, eslintConfig, {
-          formatter: friendlyFormatter,
-          exclude: [
-            resolve('package.json'),
-            resolve('node_modules/**')
-          ]
-        })),
         babel({
           exclude: [
             resolve('package.json'),
@@ -45,15 +44,12 @@ const genConfig = (opts) => {
         }),
         cjs()
       ],
-      external: ['openlayers']
+      external: ['ol']
     },
     output: {
       file: opts.file,
       format: opts.format,
       banner,
-      globals: {
-        openlayers: 'ol'
-      },
       name: _package.namespace
     }
   }
