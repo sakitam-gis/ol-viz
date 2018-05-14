@@ -1,7 +1,7 @@
 {
   "extends": [
     "tslint-react",
-    "tslint-eslint-rules"
+    "tslint-config-airbnb"
   ],
   "rules": {
     "align": [
@@ -39,7 +39,6 @@
     "no-arg": true,
     "no-bitwise": true,
     "no-conditional-assignment": true,
-    "no-consecutive-blank-lines": true,
     "no-console": [
       true,
       "debug",
@@ -142,9 +141,11 @@
     "jsx-boolean-value": [true, "never"],
     "jsx-wrap-multiline": false
   },
+  "include": [
+    "website"
+  ],
   "exclude": [
     "node_modules",
-    "lib",
-    "examples/utils"
+    "src/**/*"
   ]
 }

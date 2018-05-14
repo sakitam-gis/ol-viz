@@ -7,11 +7,16 @@ module.exports = {
       'loose': true,
       'modules': false
     }],
+    '@babel/preset-typescript',
     '@babel/preset-react'
   ],
   'plugins': [
+    [
+      "@babel/plugin-proposal-class-properties",
+      { loose: true }
+    ],
     '@babel/external-helpers',
-    '@babel/plugin-proposal-class-properties'
+    'react-hot-loader/babel'
   ],
   'ignore': [
     'dist/*.js'

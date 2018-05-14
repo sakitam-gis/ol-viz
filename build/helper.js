@@ -59,7 +59,7 @@ const cssLoaders = function (options) {
 
 const styleLoaders = function (options) {
   const output = [];
-  const loaders = exports.cssLoaders(options);
+  const loaders = cssLoaders(options);
   for (const extension in loaders) {
     const loader = loaders[extension];
     output.push({

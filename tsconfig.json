@@ -13,7 +13,9 @@
     "outDir": "lib",
     "module": "commonjs",
     "sourceMap": true,
-    "rootDirs": ["src"],
+    "rootDirs": [
+      "website"
+    ],
     "removeComments": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
@@ -22,17 +24,14 @@
     "target": "es5",
     "lib": [
       "es5",
-      "es2015",
-      "es2017",
       "dom"
     ]
   },
   "include": [
-    "src/**/*"
+    "website"
   ],
   "exclude": [
     "node_modules",
-    "lib",
-    "wensite"
+    "src/**/*"
   ]
 }

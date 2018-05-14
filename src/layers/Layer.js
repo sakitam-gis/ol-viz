@@ -1,5 +1,3 @@
-import '../polyfill/assign';
-import '../polyfill/requestAnimFrame';
 import ImageLayer from 'ol/layer/Image';
 import ImageCanvas from 'ol/source/ImageCanvas';
 import TWEEN from '@tweenjs/tween.js';

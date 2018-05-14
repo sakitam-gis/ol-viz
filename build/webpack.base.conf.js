@@ -4,7 +4,7 @@ const utils = require('./helper');
 module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: {
-    app: './website/index.js'
+    app: './website/index.tsx'
   },
   output: {
     path: utils.resolve('_site'),
@@ -44,28 +44,23 @@ module.exports = {
         test: /\.(js|jsx)$/,
         loader: 'babel-loader',
         include: [
+          utils.resolve('src'),
           utils.resolve('website'),
           utils.resolve('node_modules/webpack-dev-server/client')
         ],
       },
       {
         test: /\.tsx?$/,
-        use: [
-          {
-            loader: 'babel-loader',
-          },
-          {
-            loader: 'ts-loader',
-            options: {
-              transpileOnly: true,
-            },
-          },
-        ],
+        loader: 'ts-loader',
         include: [
           utils.resolve('src'),
           utils.resolve('website'),
           utils.resolve('test'),
         ]
+      },
+      {
+        test: /\.glsl$/,
+        loader: 'raw-loader'
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
