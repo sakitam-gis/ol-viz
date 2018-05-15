@@ -10,12 +10,17 @@ module.exports = {
     browser: true
   },
   extends: 'airbnb',
-  plugins: [],
+  plugins: [
+    'jsx-a11y',
+    'react'
+  ],
   // add your custom rules here
   rules: {
     // allow semi
-    semi: 0,
+    'semi': 0,
+    'import/no-unresolved': 0,
     // allow global require
+    'linebreak-style': 0,
     'global-require': 0,
     // allow paren-less arrow functions
     'arrow-parens': 0,

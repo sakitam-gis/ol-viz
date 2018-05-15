@@ -1,4 +1,4 @@
-function getJSON (url: string, callback: Function) {
+function getJSON(url: string, callback: Function) {
   const xhr: XMLHttpRequest = new XMLHttpRequest();
   xhr.responseType = 'json';
   xhr.open('get', url, true);
@@ -13,5 +13,5 @@ function getJSON (url: string, callback: Function) {
 }
 
 export {
-  getJSON
-}
+  getJSON, // eslint-disable-line
+};

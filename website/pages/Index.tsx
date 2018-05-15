@@ -7,18 +7,18 @@ import { getJSON } from '../helper';
 const magnifier = require('../assets/images/magnifier.png');
 
 class Index extends React.Component {
-  constructor (props: object, context: any) {
+  constructor(props: object, context: any) {
     super(props, context);
     this.state = {
-      charts: []
-    }
+      charts: [],
+    };
   }
 
-  componentDidMount () {
+  componentDidMount() {
     getJSON('./static/json/config.json', (data: any) => {
       if (data) {
         this.setState({
-          charts: data
+          charts: data,
         })
       }
     })
@@ -40,52 +40,51 @@ class Index extends React.Component {
    * 获取示例列表
    * @returns {*}
    */
-  getArtList () {
+  getArtList() {
     const { charts }: any = this.state;
-    return charts.map((item: any, index: number) => {
-      return (
-        <li className="chart" key={index}>
-          <div className="chart_wrap">
-            <span
-              className="chart_bg"
-              style={{
-                backgroundImage: `url('${item.imgSrc}')`
-              }}>
-              <div className="chart_hover animation clearfix">
-                <Link to={item.link}>
-                  <div className="chart_magnifier_right">
-                    <div>
-                      <img src={magnifier} />
-                    </div>
-                    <div>查看示例</div>
+    return charts.map((item: any, index: number) => (
+      <li className="chart" key={index}>
+        <div className="chart_wrap">
+          <span
+            className="chart_bg"
+            style={{
+              backgroundImage: `url('${item.imgSrc}')`,
+            }}
+          >
+            <div className="chart_hover animation clearfix">
+              <Link to={item.link}>
+                <div className="chart_magnifier_right">
+                  <div>
+                    <img src={magnifier} />
                   </div>
-                </Link>
+                  <div>查看示例</div>
+                </div>
+              </Link>
+            </div>
+          </span>
+          <div className="chart_info">
+            <div className="chart_name">{item.chart_name}</div>
+            <div className="chart_detail clearfix">
+              <div className="chart_author pull-left">
+                <span className="chart_icon chart_author_icon" />
+                <span className="chart_icontxt">{item.chart_author}</span>
               </div>
-            </span>
-            <div className="chart_info">
-              <div className="chart_name">{item.chart_name}</div>
-              <div className="chart_detail clearfix">
-                <div className="chart_author pull-left">
-                  <span className="chart_icon chart_author_icon" />
-                  <span className="chart_icontxt">{item.chart_author}</span>
-                </div>
-                <div className="chart_time pull-right">
-                  <span className="chart_icon chart_time_icon" />
-                  <span className="chart_icontxt">{item.chart_time}</span>
-                </div>
+              <div className="chart_time pull-right">
+                <span className="chart_icon chart_time_icon" />
+                <span className="chart_icontxt">{item.chart_time}</span>
               </div>
             </div>
           </div>
-        </li>
-      )
-    })
+        </div>
+      </li>
+    ));
   }
 
   /**
    * render
    * @returns {*}
    */
-  render () {
+  render() {
     return (
       <div>
         <Header />
@@ -97,7 +96,7 @@ class Index extends React.Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 
