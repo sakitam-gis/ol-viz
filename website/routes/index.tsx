@@ -25,6 +25,7 @@ const mainRouter = [
 
 const routes = (
   <Switch>
+    // @ts-ignore
     {mainRouter.map(route => <Route key={route.key} {...route.route} />)}
     <Redirect to="./index" />
   </Switch>

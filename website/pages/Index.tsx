@@ -1,13 +1,15 @@
+import 'ol/ol.css';
 import '../assets/style/index.scss';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import Header from './Header';
 import { getJSON } from '../helper';
+import { Props, Context } from '../interface/common';
 
 const magnifier = require('../assets/images/magnifier.png');
 
-class Index extends React.Component {
-  constructor(props: object, context: any) {
+class Index extends React.Component <Props, Context> {
+  constructor(props: Props, context: Context) {
     super(props, context);
     this.state = {
       charts: [],
@@ -19,22 +21,22 @@ class Index extends React.Component {
       if (data) {
         this.setState({
           charts: data,
-        })
+        });
       }
-    })
+    });
   }
 
   handleClick = (event: any, type: string, item: any) => {
     if (event.preventDefault) {
-      event.preventDefault()
+      event.preventDefault();
     } else {
-      event.returnValue = false
+      event.returnValue = false;
     }
     if (type === 'origin') {
-      window.open(item.url)
+      window.open(item.url);
     } else {
     }
-  };
+  }
 
   /**
    * 获取示例列表

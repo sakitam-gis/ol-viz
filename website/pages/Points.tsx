@@ -1,13 +1,19 @@
 import * as React from 'react';
-import { layer, Map, source, View } from 'ol';
-const Layer = layer.Layer;
-const OSM = source.OSM;
+// @ts-ignore
+import Map from 'ol/Map';
+// @ts-ignore
+import View from 'ol/View';
+// @ts-ignore
+import TileLayer from 'ol/layer/tile';
+// @ts-ignore
+import OSM from 'ol/source/osm';
+import { Props, Context } from '../interface/common';
 
-class Index extends React.Component {
+class Points extends React.Component <Props, Context> {
   private container: any;
   // @ts-ignore
   private map: Map | undefined;
-  constructor (props: object, context: any) {
+  constructor (props: Props, context: Context) {
     super(props, context);
     this.state = {
       zoom: 14,
@@ -21,7 +27,7 @@ class Index extends React.Component {
         center: [0, 0],
       }),
       layers: [
-        new Layer({
+        new TileLayer({
           source: new OSM(),
         }),
       ],
@@ -42,4 +48,4 @@ class Index extends React.Component {
   }
 }
 
-export default Index;
+export default Points;
