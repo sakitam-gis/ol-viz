@@ -6,7 +6,7 @@ const vs_s = [ // eslint-disable-line
   'void main() {',
   'gl_Position = a_Position;',
   'gl_PointSize = a_PointSize;',
-  '}'
+  '}',
 ].join('');
 
 const fs_s = [ // eslint-disable-line
@@ -14,12 +14,12 @@ const fs_s = [ // eslint-disable-line
   'uniform vec4 u_FragColor;',
   'void main() {',
   'gl_FragColor = u_FragColor;',
-  '}'
+  '}',
 ].join('');
 
 let colored;
 
-function render (gl, data, that) {
+function render(gl, data, that) {
   if (!data) return;
   const map = that.getMap();
   const program = initShaders(gl, vs_s, fs_s);
@@ -31,16 +31,16 @@ function render (gl, data, that) {
   const halfCanvasWidth = gl.canvas.width / 2;
   const halfCanvasHeight = gl.canvas.height / 2;
   const verticesData = [];
-  let [count, i, length] = [0, 0, data.length];
+  const { length } = data;
+  let [count, i] = [0, 0];
   for (; i < length; i++) {
     const item = map.getPixelFromCoordinate(data[i].geometry.coordinates);
     const x = (item[0] - halfCanvasWidth) / halfCanvasWidth;
     const y = (halfCanvasHeight - item[1]) / halfCanvasHeight;
-    if (x < -1 || x > 1 || y < -1 || y > 1) {
-      continue;
+    if (x >= -1 && x <= 1 && y >= -1 && y <= 1) {
+      verticesData.push(x, y);
+      count++;
     }
-    verticesData.push(x, y);
-    count++;
   }
   const vertices = new Float32Array(verticesData);
   const n = count; // The number of vertices

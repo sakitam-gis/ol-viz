@@ -15,7 +15,7 @@ const CONTEXT_CONFIG = {
   lineDashOffset: 0,
   font: '10px sans-serif',
   textAlign: 'start',
-  textBaseline: 'alphabetic'
+  textBaseline: 'alphabetic',
 };
 
 /**
@@ -24,15 +24,19 @@ const CONTEXT_CONFIG = {
  * @param height
  * @returns {HTMLElement}
  */
-const createCanvas = function (width, height) {
+const createCanvas = (width, height) => {
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
   return canvas;
 };
 
-function onContextCreationError (error) {
-  console.log(error.statusMessage);
+/**
+ * handle webgl content error
+ * @param error
+ */
+function onContextCreationError(error) {
+  console.log(error.statusMessage); // eslint-disable-line
 }
 
 /**
@@ -42,15 +46,15 @@ function onContextCreationError (error) {
  * @param glOptions
  * @returns {*}
  */
-const createContext = function (canvas, type, glOptions = {}) {
+const createContext = (canvas, type, glOptions = {}) => {
   if (!canvas) return null;
   let context = null;
   if (type === '2d') {
     context = canvas.getContext('2d');
     if (!context._merge_ && CONTEXT_CONFIG) {
-      for (let key in CONTEXT_CONFIG) {
+      Object.keys(CONTEXT_CONFIG).forEach(key => {
         context[key] = CONTEXT_CONFIG[key]
-      }
+      })
       context._merge_ = true;
     }
   } else if (type === 'webgl') {
@@ -67,15 +71,21 @@ const createContext = function (canvas, type, glOptions = {}) {
 };
 
 /**
+ * get pixel ratio
+ * @returns {number}
+ */
+const getDevicePixelRatio = () => window.devicePixelRatio || 1;
+
+/**
  * scale canvas
  * @param context
  */
-const scaleCanvas = function (context) {
+const scaleCanvas = context => {
   const devicePixelRatio = getDevicePixelRatio();
-  context.canvas.width = context.canvas.width * devicePixelRatio;
-  context.canvas.height = context.canvas.height * devicePixelRatio;
-  context.canvas.style.width = context.canvas.width / devicePixelRatio + 'px';
-  context.canvas.style.height = context.canvas.height / devicePixelRatio + 'px';
+  context.canvas.width *= devicePixelRatio;
+  context.canvas.height *= devicePixelRatio;
+  context.canvas.style.width = `${context.canvas.width / devicePixelRatio}px`;
+  context.canvas.style.height = `${context.canvas.height / devicePixelRatio}px`;
   context.scale(devicePixelRatio, devicePixelRatio);
 };
 
@@ -84,57 +94,28 @@ const scaleCanvas = function (context) {
  * @param context
  * @param type
  */
-const clearRect = function (context, type) {
+const clearRect = (context, type) => {
   if (!context) return;
   if (type === '2d') {
-    context.clearRect && context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
   } else if (type === 'webgl') {
-    context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
+    context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT); // eslint-disable-line
   }
 };
 
-/**
- * get pixel ratio
- * @returns {number}
- */
-const getDevicePixelRatio = function () {
-  return window.devicePixelRatio || 1;
-};
 
 /**
  * bind
  * @param fn
  * @param context
+ * @param args
  * @returns {Function}
  */
-const bind = function (fn, context) {
-  const args = arguments.length > 2 ? Array.prototype.slice.call(arguments, 2) : null;
-  return function () {
-    return fn.apply(context, args || arguments);
+function bind(fn, context, ...args) {
+  return function () { // eslint-disable-line
+    return fn.apply(context, args);
   };
-};
-
-/**
- * get parent container
- * @param selector
- */
-const getTarget = (selector) => {
-  let dom = (function () {
-    let found;
-    return document && /^#([\w-]+)$/.test(selector)
-      ? (found = document.getElementById(RegExp.$1)) // eslint-disable-line
-        ? [found]
-        : [] // eslint-disable-line
-      : Array.prototype.slice.call(
-        /^\.([\w-]+)$/.test(selector)
-          ? document.getElementsByClassName(RegExp.$1)
-          : /^[\w-]+$/.test(selector)
-            ? document.getElementsByTagName(selector)
-            : document.querySelectorAll(selector)
-      );
-  })();
-  return dom;
-};
+}
 
 const createShader = (gl, src, type) => {
   const shader = gl.createShader(type);
@@ -163,7 +144,6 @@ const getColorData = (color) => {
 
 export {
   bind,
-  getTarget,
   clearRect,
   initShaders,
   createCanvas,
@@ -171,5 +151,5 @@ export {
   createShader,
   createContext,
   getColorData,
-  getDevicePixelRatio
+  getDevicePixelRatio,
 }

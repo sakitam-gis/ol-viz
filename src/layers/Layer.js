@@ -5,21 +5,21 @@ import GlRender from '../render/Point/webgl'
 import Render from '../render/Point/canvas';
 import {
   createCanvas, clearRect,
-  getDevicePixelRatio, createContext
+  getDevicePixelRatio, createContext,
 } from '../helper';
 
 const keys = [
-  'fillStyle'
+  'fillStyle',
 ];
 
 const glOptions = {
   alpha: true,
   antialias: true,
-  preserveDrawingBuffer: true
+  preserveDrawingBuffer: true,
 };
 
 class Layer extends ImageLayer {
-  constructor (map, options = {}) {
+  constructor(map, options = {}) {
     super(options);
     if (map) {
       this.setMap(map);
@@ -30,14 +30,14 @@ class Layer extends ImageLayer {
      * @type {boolean}
      * @private
      */
-    this._isAdd = true;
+    this.isAdd = true;
 
     /**
      * this canvas
      * @type {null}
      * @private
      */
-    this._canvas = null;
+    this.canvas = null;
 
     /**
      * options
@@ -50,21 +50,24 @@ class Layer extends ImageLayer {
      * @type {boolean}
      * @private
      */
-    this._isRenderer = false;
+    this.isRenderer = false;
 
     /**
      * 默认鼠标样式
      * @type {string}
      * @private
      */
-    this.previousCursor_ = '';
+    this.previousCursor = '';
 
     /**
      * animate
      * @type {null}
      * @private
      */
-    this._animationLoop = null;
+    this.animationLoop = null;
+
+    this.animatorMovestartEvent = this.animatorMovestartEvent.bind(this);
+    this.animatorMoveendEvent = this.animatorMoveendEvent.bind(this);
     if (!this.options.context) {
       this.set('context', '2d')
     }
@@ -79,8 +82,8 @@ class Layer extends ImageLayer {
         projection: options.hasOwnProperty('projection')
           ? options.projection
           : 'EPSG:3857',
-        ratio: options.hasOwnProperty('ratio') ? options.ratio : getDevicePixelRatio()
-      })
+        ratio: options.hasOwnProperty('ratio') ? options.ratio : getDevicePixelRatio(),
+      }),
     );
   }
 
@@ -88,59 +91,59 @@ class Layer extends ImageLayer {
    * 是否允许补间动画
    * @returns {*|boolean}
    */
-  isEnabledTime () {
+  isEnabledTime() {
     const animationOptions = this.options.animation;
     return (
-      animationOptions &&
-      !(animationOptions.enabled === false)
+      animationOptions
+      && !(animationOptions.enabled === false)
     );
   }
 
   /**
    * animator
    */
-  initAnimator () {
+  initAnimator() {
     const that = this;
     const animationOptions = this.options.animation;
     if (this.options.draw === 'time' || this.isEnabledTime()) {
       if (!animationOptions.stepsRange) {
         animationOptions.stepsRange = {
           start: 0,
-          end: 0
+          end: 0,
         }
       }
       this.steps = { step: animationOptions.stepsRange.start };
-      this.animator = new TWEEN.Tween(that.steps).onUpdate(function (event) {
-        that._canvasUpdate(event.step);
+      this.animator = new TWEEN.Tween(that.steps).onUpdate((event) => {
+        that.canvasUpdate(event.step);
       }).repeat(Infinity);
       this.addAnimatorEvent();
       const duration = animationOptions.duration * 1000 || 5000;
       this.animator.to({ step: animationOptions.stepsRange.end }, duration);
       this.animator.start();
     } else {
-      this.animator && this.animator.stop();
+      this.animator.stop();
     }
-    (function frame () {
-      that._animationLoop = window.requestAnimFrame(frame);
+    (function frame() {
+      that.animationLoop = window.requestAnimFrame(frame);
       TWEEN.update()
-    })();
+    }());
   }
 
   /**
    * add animator event
    */
-  addAnimatorEvent () {
-    const _map = this.getMap();
-    if (!_map) return;
-    _map.on('movestart', this._animatorMovestartEvent, this);
-    _map.on('moveend', this._animatorMoveendEvent, this);
+  addAnimatorEvent() {
+    const map = this.getMap();
+    if (!map) return;
+    map.on('movestart', this.animatorMovestartEvent);
+    map.on('moveend', this.animatorMoveendEvent);
   }
 
   /**
    * handle movestart event
    * @private
    */
-  _animatorMovestartEvent () {
+  animatorMovestartEvent() {
     const animationOptions = this.options.animation;
     if (this.isEnabledTime() && this.animator) {
       this.steps.step = animationOptions.stepsRange.start;
@@ -152,7 +155,7 @@ class Layer extends ImageLayer {
    * handle moveend event
    * @private
    */
-  _animatorMoveendEvent () {
+  animatorMoveendEvent() {
     if (this.isEnabledTime() && this.animator) {
       this.animator.start();
     }
@@ -164,22 +167,22 @@ class Layer extends ImageLayer {
    * @param resolution
    * @param pixelRatio
    * @param size
-   * @param projection
    * @returns {*}
    */
-  canvasFunction (extent, resolution, pixelRatio, size, projection) {
-    if (!this._canvas) {
-      this._canvas = createCanvas(size[0], size[1])
+  canvasFunction(extent, resolution, pixelRatio, size) {
+    if (!this.canvas) {
+      this.canvas = createCanvas(size[0], size[1])
     } else {
-      this._canvas.width = size[0];
-      this._canvas.height = size[1];
+      const [width, height] = size;
+      this.canvas.width = width;
+      this.canvas.height = height;
     }
-    if (this._isAdd) {
+    if (this.isAdd) {
       this.render()
     } else {
       // console.warn('超出所设置最大分辨率！')
     }
-    return this._canvas
+    return this.canvas
   }
 
   /**
@@ -187,10 +190,10 @@ class Layer extends ImageLayer {
    * @param time
    * @returns {Layer}
    */
-  render (time) {
-    const context = createContext(this._canvas, this.get('context'), glOptions);
-    if (!this._isRenderer) {
-      this._isRenderer = true;
+  render(time) {
+    const context = createContext(this.canvas, this.get('context'), glOptions);
+    if (!this.isRenderer) {
+      this.isRenderer = true;
       this.initAnimator();
     }
     if (this.isEnabledTime()) {
@@ -210,11 +213,11 @@ class Layer extends ImageLayer {
     }
 
     if (this.get('context') === '2d') {
-      for (const key in this.options) {
+      Object.keys(this.options).forEach(key => {
         if (keys.indexOf(key) > -1) {
           context[key] = this.options[key];
         }
-      }
+      })
     } else {
       context.clear(context.COLOR_BUFFER_BIT);
     }
@@ -223,7 +226,7 @@ class Layer extends ImageLayer {
     this.dispatchEvent({
       type: 'render',
       target: this,
-      time: time
+      time,
     });
     return this;
   }
@@ -232,10 +235,8 @@ class Layer extends ImageLayer {
    * draw context
    * @param context
    * @param data
-   * @param options
-   * @param nwPixel
    */
-  drawContext (context, data, options, nwPixel) {
+  drawContext(context, data) {
     switch (this.options.draw) {
       default:
         if (this.get('context') === 'webgl') {
@@ -251,7 +252,7 @@ class Layer extends ImageLayer {
    * @param time
    * @private
    */
-  _canvasUpdate (time) {
+  _canvasUpdate(time) {
     this.render(time);
   }
 
@@ -259,17 +260,16 @@ class Layer extends ImageLayer {
    * set map
    * @param map
    */
-  setMap (map) {
-    console.log(map);
+  setMap(map) {
     this.set('_origin_map_', map);
-    this._isAdd = true;
+    this.isAdd = true;
     super.setMap(map);
   }
 
   /**
    * get map
    */
-  getMap () {
+  getMap() {
     return this.get('_origin_map_')
   }
 
@@ -278,17 +278,17 @@ class Layer extends ImageLayer {
    * @param cursor
    * @param feature
    */
-  setDefaultCursor (cursor, feature) {
+  setDefaultCursor(cursor, feature) {
     if (!this.getMap()) return;
     const element = this.getMap().getTargetElement();
     if (feature) {
       if (element.style.cursor !== cursor) {
-        this.previousCursor_ = element.style.cursor;
+        this.previousCursor = element.style.cursor;
         element.style.cursor = cursor
       }
-    } else if (this.previousCursor_ !== undefined) {
-      element.style.cursor = this.previousCursor_;
-      this.previousCursor_ = undefined;
+    } else if (this.previousCursor !== undefined) {
+      element.style.cursor = this.previousCursor;
+      this.previousCursor = undefined;
     }
   }
 }

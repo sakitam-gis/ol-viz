@@ -18,7 +18,9 @@ module.exports = {
   rules: {
     // allow semi
     'semi': 0,
+    'no-plusplus': 0,
     'import/no-unresolved': 0,
+    'no-param-reassign': 0,
     // allow global require
     'linebreak-style': 0,
     'global-require': 0,
@@ -26,6 +28,8 @@ module.exports = {
     'arrow-parens': 0,
     // allow async-await
     'generator-star-spacing': 0,
+    'no-prototype-builtins': 0,
+    'no-underscore-dangle': 0,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   },

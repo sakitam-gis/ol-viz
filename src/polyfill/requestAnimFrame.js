@@ -1,36 +1,37 @@
-import { bind } from '../utils'
+import { bind } from '../helper'
 
-window.requestAnimFrame = function (fn, immediate, context, element) {
+window.requestAnimFrame = (fn, immediate, context, element) => {
+  let returnReq
   const f = bind(fn, context);
-  const request = (window.requestAnimationFrame ||
-    window.webkitRequestAnimationFrame ||
-    window.mozRequestAnimationFrame ||
-    window.oRequestAnimationFrame ||
-    window.msRequestAnimationFrame ||
-    function (callback) {
+  const request = (window.requestAnimationFrame
+    || window.webkitRequestAnimationFrame
+    || window.mozRequestAnimationFrame
+    || window.oRequestAnimationFrame
+    || window.msRequestAnimationFrame
+    || function (callback) { // eslint-disable-line
       window.setTimeout(callback, 1000 / 60);
     });
   if (request) {
-    return request.call(window, f, element);
-  } else {
-    if (immediate) {
-      f();
-    } else {
-      return window.setTimeout(f, 16);
-    }
+    returnReq = request.call(window, f, element);
   }
+  if (immediate) {
+    f();
+  } else {
+    returnReq = window.setTimeout(f, 16);
+  }
+  return returnReq;
 };
 
-const getCancelAnimFrame = function () {
+const getCancelAnimFrame = () => {
   const prefixs = ['webkit', 'moz', 'o', 'ms'];
   let func = window.cancelAnimationFrame;
-  for (let i = 0, len = prefixs.length; i < len && !func; i++) {
-    func = window[prefixs[i] + 'CancelAnimationFrame'] || window[prefixs[i] + 'CancelRequestAnimationFrame'];
+  for (let i = 0, len = prefixs.length; i < len && !func; i++) { // eslint-disable-line
+    func = window[`${prefixs[i]}CancelAnimationFrame`] || window[`${prefixs[i]}CancelRequestAnimationFrame`];
   }
   return func;
 };
 
-window.cancelAnimFrame = function (id) {
+window.cancelAnimFrame = id => {
   const cancel = getCancelAnimFrame();
   if (cancel) {
     cancel.call(window, id);

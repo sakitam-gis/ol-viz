@@ -23,6 +23,7 @@ const genConfig = (opts) => {
       input: resolve('src/index.js'),
       plugins: [
         eslint({
+          throwOnWarning: false,
           configFile: resolve('.eslintrc.js'),
           formatter: friendlyFormatter,
           exclude: [resolve('node_modules')]
@@ -32,6 +33,22 @@ const genConfig = (opts) => {
           indent: ' '
         }),
         babel({
+          babelrc: false,
+          presets: [
+            ['@babel/env', {
+              targets: {
+                browsers: ['> 1%', 'last 2 versions', 'not ie <= 8'],
+              },
+              loose: true,
+              modules: false,
+            }]
+          ],
+          plugins: ['@babel/external-helpers'],
+          externalHelpers: true,
+          ignore: [
+            'dist/*.js',
+          ],
+          comments: false,
           exclude: [
             resolve('package.json'),
             resolve('node_modules/**')

@@ -40,7 +40,7 @@
     "no-bitwise": true,
     "no-conditional-assignment": true,
     "no-console": [
-      true,
+      false,
       "debug",
       "info",
       "log",

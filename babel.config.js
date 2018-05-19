@@ -1,25 +1,25 @@
 module.exports = {
-  'presets': [
+  presets: [
     ['@babel/env', {
-      'targets': {
-        'browsers': ['> 1%', 'last 2 versions', 'not ie <= 8']
+      targets: {
+        browsers: ['> 1%', 'last 2 versions', 'not ie <= 8'],
       },
-      'loose': true,
-      'modules': false
+      loose: true,
+      modules: false,
     }],
     '@babel/preset-typescript',
-    '@babel/preset-react'
+    '@babel/preset-react',
   ],
-  'plugins': [
+  plugins: [
     [
-      "@babel/plugin-proposal-class-properties",
-      { loose: true }
+      '@babel/plugin-proposal-class-properties',
+      { loose: true },
     ],
     '@babel/external-helpers',
-    'react-hot-loader/babel'
+    'react-hot-loader/babel',
   ],
-  'ignore': [
-    'dist/*.js'
+  ignore: [
+    'dist/*.js',
   ],
-  'comments': false
+  comments: false,
 };

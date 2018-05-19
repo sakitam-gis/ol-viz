@@ -3,5 +3,5 @@ import './polyfill/requestAnimFrame';
 import Layer from './layers/Layer'
 
 export {
-  Layer
+  Layer, // eslint-disable-line
 }

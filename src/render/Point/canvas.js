@@ -1,4 +1,4 @@
-function render (context, data, that) {
+function render(context, data, that) {
   const map = that.getMap();
   const symbol = that.options.symbol || 'circle';
   const size = data._size || data.size || that.options._size || that.options.size || 5;

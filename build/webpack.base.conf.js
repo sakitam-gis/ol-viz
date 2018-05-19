@@ -37,7 +37,7 @@ module.exports = {
         ],
         options: {
           formatter: require('eslint-friendly-formatter'),
-          emitWarning: true
+          emitWarning: false
         }
       },
       {
@@ -53,7 +53,6 @@ module.exports = {
         test: /\.tsx?$/,
         loader: 'ts-loader',
         include: [
-          utils.resolve('src'),
           utils.resolve('website'),
           utils.resolve('test'),
         ]
