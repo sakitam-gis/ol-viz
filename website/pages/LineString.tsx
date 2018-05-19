@@ -11,26 +11,27 @@ import { Props, Context } from '../interface/common';
 // @ts-ignore
 import { Layer } from '../../dist/ol-viz';
 
-function randomData(num: number, wight: number) {
+function randomData(num: number) {
   let i = 0;
   const arr = [];
   // @ts-ignore
   for (; i < num; i++) {
-    arr.push({
-      geometry: {
-        type: 'Point',
-        coordinates: [
-          random(71.34700137499999, 155.722001375),
-          random(13.610967125000002, 55.271123375),
-          wight,
-        ],
-      },
-    });
+    arr.push([
+      random(71.34700137499999, 155.722001375),
+      random(13.610967125000002, 55.271123375),
+    ]);
   }
-  return arr;
+  return {
+    type: 'Feature',
+    properties: {},
+    geometry: {
+      type: 'LineString',
+      coordinates: arr,
+    },
+  };
 }
 
-class Points extends React.Component <Props, Context> {
+class LineString extends React.Component <Props, Context> {
   private container: any;
   // @ts-ignore
   private map: Map | undefined;
@@ -62,17 +63,19 @@ class Points extends React.Component <Props, Context> {
       }),
     });
 
-    const data = randomData(200000, 2);
+    const data = randomData(2000);
     const options = {
-      draw: 'Point',
-      fillStyle: 'rgba(255, 250, 0, 0.8)',
-      size: 0.7,
+      draw: 'LineString',
+      strokeStyle: 'rgba(255, 250, 0, 0.8)',
+      lineWidth: 2,
       symbol: 'point',
-      context: 'webgl',
+      // context: 'webgl',
     };
 
     const layer = new Layer(this.map, {
-      data,
+      data: [
+        data,
+      ],
       ...options,
       projection: 'EPSG:4326',
     });
@@ -94,4 +97,4 @@ class Points extends React.Component <Props, Context> {
   }
 }
 
-export default Points;
+export default LineString;

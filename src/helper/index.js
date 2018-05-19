@@ -117,24 +117,6 @@ function bind(fn, context, ...args) {
   };
 }
 
-const createShader = (gl, src, type) => {
-  const shader = gl.createShader(type);
-  gl.shaderSource(shader, src);
-  gl.compileShader(shader);
-  return shader;
-};
-
-const initShaders = (gl, vs_source, fs_source) => { // eslint-disable-line
-  const vertexShader = createShader(gl, vs_source, gl.VERTEX_SHADER);
-  const fragmentShader = createShader(gl, fs_source, gl.FRAGMENT_SHADER);
-  const glProgram = gl.createProgram();
-  gl.attachShader(glProgram, vertexShader);
-  gl.attachShader(glProgram, fragmentShader);
-  gl.linkProgram(glProgram);
-  gl.useProgram(glProgram);
-  return glProgram;
-};
-
 const getColorData = (color) => {
   const ctx = createCanvas(1, 1).getContext('2d');
   ctx.fillStyle = color;
@@ -145,10 +127,8 @@ const getColorData = (color) => {
 export {
   bind,
   clearRect,
-  initShaders,
   createCanvas,
   scaleCanvas,
-  createShader,
   createContext,
   getColorData,
   getDevicePixelRatio,

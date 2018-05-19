@@ -1,8 +1,10 @@
 import ImageLayer from 'ol/layer/Image';
 import ImageCanvas from 'ol/source/ImageCanvas';
 import TWEEN from '@tweenjs/tween.js';
-import GlRender from '../render/Point/webgl'
-import Render from '../render/Point/canvas';
+import PointGlRender from '../render/Point/webgl'
+import PointRender from '../render/Point/canvas';
+import LineRender from '../render/Polyline/canvas';
+import LineGlRender from '../render/Polyline/webgl';
 import {
   createCanvas, clearRect,
   getDevicePixelRatio, createContext,
@@ -66,6 +68,7 @@ class Layer extends ImageLayer {
      */
     this.animationLoop = null;
 
+    this.canvasFunction = this.canvasFunction.bind(this);
     this.animatorMovestartEvent = this.animatorMovestartEvent.bind(this);
     this.animatorMoveendEvent = this.animatorMoveendEvent.bind(this);
     if (!this.options.context) {
@@ -78,7 +81,7 @@ class Layer extends ImageLayer {
         state: options.state,
         attributions: options.attributions,
         resolutions: options.resolutions,
-        canvasFunction: this.canvasFunction.bind(this),
+        canvasFunction: this.canvasFunction,
         projection: options.hasOwnProperty('projection')
           ? options.projection
           : 'EPSG:3857',
@@ -121,7 +124,7 @@ class Layer extends ImageLayer {
       this.animator.to({ step: animationOptions.stepsRange.end }, duration);
       this.animator.start();
     } else {
-      this.animator.stop();
+      this.animator && this.animator.stop(); // eslint-disable-line
     }
     (function frame() {
       that.animationLoop = window.requestAnimFrame(frame);
@@ -194,7 +197,7 @@ class Layer extends ImageLayer {
     const context = createContext(this.canvas, this.get('context'), glOptions);
     if (!this.isRenderer) {
       this.isRenderer = true;
-      this.initAnimator();
+      // this.initAnimator();
     }
     if (this.isEnabledTime()) {
       if (time === undefined) {
@@ -238,12 +241,22 @@ class Layer extends ImageLayer {
    */
   drawContext(context, data) {
     switch (this.options.draw) {
-      default:
+      case 'Point':
         if (this.get('context') === 'webgl') {
-          GlRender(context, data, this);
+          PointGlRender(context, data, this);
         } else {
-          Render(context, data, this);
+          PointRender(context, data, this);
         }
+        break;
+      case 'LineString':
+        if (this.get('context') === 'webgl') {
+          LineGlRender(context, data, this);
+        } else {
+          LineRender(context, data, this);
+        }
+        break;
+      default:
+        console.warn('不存在的类型！'); // eslint-disable-line
     }
   }
 
@@ -252,7 +265,7 @@ class Layer extends ImageLayer {
    * @param time
    * @private
    */
-  _canvasUpdate(time) {
+  canvasUpdate(time) {
     this.render(time);
   }
 

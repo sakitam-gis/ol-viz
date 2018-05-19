@@ -44,6 +44,7 @@
     "@types/react-dom": "^16.0.11",
     "@types/react-hot-loader": "^4.1.0",
     "@types/react-router-dom": "^4.3.1",
+    "@types/lodash": "^4.14.119",
     "react": "^16.7.0",
     "react-color": "^2.14.1",
     "react-copy-to-clipboard": "^5.0.1",
@@ -56,7 +57,8 @@
     "react-router-dom": "^4.3.1",
     "@tweenjs/tween.js": "^17.2.0",
     "bisheng-theme-one": "^0.2.34",
-    "ol": "^5.0.0"
+    "ol": "^5.0.0",
+    "lodash": "^4.17.11"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",

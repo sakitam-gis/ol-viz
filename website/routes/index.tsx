@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Index from '../pages/Index';
 import Points from '../pages/Points';
+import LineString from '../pages/LineString';
 
 const mainRouter = [
   {
@@ -19,6 +20,14 @@ const mainRouter = [
     route: {
       path: '/points',
       component: Points,
+    },
+  },
+  {
+    name: 'LineString',
+    key: 'LineString',
+    route: {
+      path: '/LineString',
+      component: LineString,
     },
   },
 ];
