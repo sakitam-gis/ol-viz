@@ -13,9 +13,9 @@ function render(context, data, that) {
     for (let j = 0; j < coordinates.length; j++) {
       const coords = map.getPixelFromCoordinate(coordinates[j]);
       if (j === 0) {
-        context.moveTo(...coords);
+        context.moveTo(coords[0], coords[1]);
       } else {
-        context.lineTo(...coords);
+        context.lineTo(coords[0], coords[1]);
       }
     }
     if (properties.lineWidth) {

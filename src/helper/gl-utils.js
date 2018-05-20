@@ -1,3 +1,5 @@
+import { mat4 } from '@mapbox/gl-matrix';
+
 function createShader(gl, type, source) {
   const shader = gl.createShader(type);
   gl.shaderSource(shader, source);
@@ -58,13 +60,40 @@ function bindTexture(gl, texture, unit) {
   gl.bindTexture(gl.TEXTURE_2D, texture);
 }
 
-function createBuffer(gl, data, bind = false) {
+function createBuffer(gl, bind = false) {
   const buffer = gl.createBuffer();
   if (bind) {
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
   }
-  gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
   return buffer;
+}
+
+
+// from https://github.com/maptalks/maptalks.biglayer/blob/master/src/Renderer.js
+function enableVertexAttrib(gl, program, attributes) {
+  if (Array.isArray(attributes[0])) {
+    const verticesTexCoords = new Float32Array([0.0, 0.0, 0.0]);
+    const FSIZE = verticesTexCoords.BYTES_PER_ELEMENT;
+    let STRIDE = 0;
+    for (let i = 0; i < attributes.length; i++) {
+      STRIDE += (attributes[i][1] || 0);
+    }
+
+    let offset = 0;
+    for (let i = 0; i < attributes.length; i++) {
+      const attribute = gl.getAttribLocation(program, attributes[i][0]);
+      if (attribute < 0) {
+        throw new Error(`Failed to get the storage location of ${attributes[i][0]}`);
+      }
+      gl.vertexAttribPointer(attribute, attributes[i][1], gl[attributes[i][2] || 'FLOAT'], false, FSIZE * STRIDE, FSIZE * offset);
+      offset += (attributes[i][1] || 0);
+      gl.enableVertexAttribArray(attribute);
+    }
+  } else {
+    const attribute = gl.getAttribLocation(program, attributes[0]);
+    gl.vertexAttribPointer(attribute, attributes[1], gl[attributes[2] || 'FLOAT'], false, 0, 0);
+    gl.enableVertexAttribArray(attribute);
+  }
 }
 
 function bindAttribute(gl, buffer, attribute, numComponents) {
@@ -82,6 +111,22 @@ function bindFramebuffer(gl, framebuffer, texture) {
   }
 }
 
+function calcMatrices(gl) {
+  const size = [gl.canvas.width, gl.canvas.height];
+  const fov = 36.86989764584402;
+  const farZ = 630718464;
+  const m = mat4.create();
+  mat4.perspective(m, fov, size.width / size.height, 1, farZ);
+  const m1 = mat4.create();
+  mat4.scale(m, m, [1, -1, 1]);
+  // m1: projection matrix
+  mat4.copy(m1, m);
+  // m2: view matrix
+  const m2 = this._getLookAtMat();
+  mat4.multiply(m, m1, m2);
+  return m;
+}
+
 export {
   createBuffer,
   createProgram,
@@ -89,4 +134,5 @@ export {
   bindFramebuffer,
   bindTexture,
   createTexture,
+  enableVertexAttrib,
 }

@@ -66,7 +66,7 @@ class Points extends React.Component <Props, Context> {
     const options = {
       draw: 'Point',
       fillStyle: 'rgba(255, 250, 0, 0.8)',
-      size: 0.7,
+      size: 2,
       symbol: 'point',
       context: 'webgl',
     };

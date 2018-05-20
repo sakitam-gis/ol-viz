@@ -5,31 +5,11 @@ import { Map, View } from 'ol';
 import { Tile } from 'ol/layer';
 // @ts-ignore
 import { OSM } from 'ol/source';
-import { random } from 'lodash';
 import { Props, Context } from '../interface/common';
+import { getJSON } from '../helper';
 
 // @ts-ignore
 import { Layer } from '../../dist/ol-viz';
-
-function randomData(num: number) {
-  let i = 0;
-  const arr = [];
-  // @ts-ignore
-  for (; i < num; i++) {
-    arr.push([
-      random(71.34700137499999, 155.722001375),
-      random(13.610967125000002, 55.271123375),
-    ]);
-  }
-  return {
-    type: 'Feature',
-    properties: {},
-    geometry: {
-      type: 'LineString',
-      coordinates: arr,
-    },
-  };
-}
 
 class LineString extends React.Component <Props, Context> {
   private container: any;
@@ -63,24 +43,23 @@ class LineString extends React.Component <Props, Context> {
       }),
     });
 
-    const data = randomData(2000);
-    const options = {
-      draw: 'LineString',
-      strokeStyle: 'rgba(255, 250, 0, 0.8)',
-      lineWidth: 2,
-      symbol: 'point',
-      // context: 'webgl',
-    };
+    getJSON('./static/json/line.json', (data: Array<object>) => {
+      const options = {
+        draw: 'LineString',
+        strokeStyle: 'rgba(255, 250, 0, 0.8)',
+        lineWidth: 2,
+        _size: 20,
+        context: 'webgl',
+      };
 
-    const layer = new Layer(this.map, {
-      data: [
+      const layer = new Layer(this.map, {
         data,
-      ],
-      ...options,
-      projection: 'EPSG:4326',
-    });
+        ...options,
+        projection: 'EPSG:4326',
+      });
 
-    this.map.addLayer(layer);
+      this.map.addLayer(layer);
+    });
   }
 
   componentWillUnmount () {

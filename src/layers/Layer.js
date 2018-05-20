@@ -6,7 +6,7 @@ import PointRender from '../render/Point/canvas';
 import LineRender from '../render/Polyline/canvas';
 import LineGlRender from '../render/Polyline/webgl';
 import {
-  createCanvas, clearRect,
+  createCanvas, clearRect, scaleCanvas,
   getDevicePixelRatio, createContext,
 } from '../helper';
 
@@ -60,6 +60,12 @@ class Layer extends ImageLayer {
      * @private
      */
     this.previousCursor = '';
+
+    /**
+     * canvas & webgl context
+     * @type {null}
+     */
+    this.context = null;
 
     /**
      * animate
@@ -177,6 +183,9 @@ class Layer extends ImageLayer {
       this.canvas = createCanvas(size[0], size[1])
     } else {
       const [width, height] = size;
+      if ((this.canvas.width !== width || this.canvas.height !== height) && this.context) {
+        scaleCanvas(this.context, size, this.get('context'));
+      }
       this.canvas.width = width;
       this.canvas.height = height;
     }
@@ -194,38 +203,40 @@ class Layer extends ImageLayer {
    * @returns {Layer}
    */
   render(time) {
-    const context = createContext(this.canvas, this.get('context'), glOptions);
+    if (!this.context) {
+      this.context = createContext(this.canvas, this.get('context'), glOptions);
+    }
     if (!this.isRenderer) {
       this.isRenderer = true;
       // this.initAnimator();
     }
     if (this.isEnabledTime()) {
       if (time === undefined) {
-        clearRect(context, this.get('context'));
+        clearRect(this.context, this.get('context'));
         return this;
       }
       if (this.get('context') === '2d') {
-        context.save();
-        context.globalCompositeOperation = 'destination-out';
-        context.fillStyle = 'rgba(0, 0, 0, .1)';
-        context.fillRect(0, 0, context.canvas.width, context.canvas.height);
-        context.restore();
+        this.context.save();
+        this.context.globalCompositeOperation = 'destination-out';
+        this.context.fillStyle = 'rgba(0, 0, 0, .1)';
+        this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+        this.context.restore();
       }
     } else {
-      clearRect(context, this.get('context'));
+      clearRect(this.context, this.get('context'));
     }
 
     if (this.get('context') === '2d') {
       Object.keys(this.options).forEach(key => {
         if (keys.indexOf(key) > -1) {
-          context[key] = this.options[key];
+          this.context[key] = this.options[key];
         }
       })
     } else {
-      context.clear(context.COLOR_BUFFER_BIT);
+      this.context.clear(this.context.COLOR_BUFFER_BIT);
     }
 
-    this.drawContext(context, this.options.data, this.options, { x: 0, y: 0 });
+    this.drawContext(this.context, this.options.data, this.options, { x: 0, y: 0 });
     this.dispatchEvent({
       type: 'render',
       target: this,
