@@ -22,7 +22,7 @@ function render(gl, data, that) {
   ]);
   gl.vertexAttrib1f(size, that.options._size)
   if (!colored) {
-    colored = getColorData(that.options.strokeStyle || 'red');
+    colored = getColorData(that.options.fillStyle || 'red');
   }
   gl.uniform4f(color,
     colored[0] / 255,
@@ -41,9 +41,9 @@ function render(gl, data, that) {
       const item = map.getPixelFromCoordinate(coords[j]);
       const x = (item[0] - halfCanvasWidth) / halfCanvasWidth;
       const y = (halfCanvasHeight - item[1]) / halfCanvasHeight;
-      // if (x >= -1 && x <= 1 && y >= -1 && y <= 1) {
-      // }
-      verticesData.push(x, y);
+      if (x >= -1 && x <= 1 && y >= -1 && y <= 1) {
+        verticesData.push(x, y);
+      }
     }
     const vertices = new Float32Array(verticesData);
     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);

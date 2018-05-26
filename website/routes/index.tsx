@@ -4,6 +4,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import Index from '../pages/Index';
 import Points from '../pages/Points';
 import LineString from '../pages/LineString';
+import Polygon from '../pages/Polygon';
 
 const mainRouter = [
   {
@@ -28,6 +29,14 @@ const mainRouter = [
     route: {
       path: '/LineString',
       component: LineString,
+    },
+  },
+  {
+    name: 'Polygon',
+    key: 'Polygon',
+    route: {
+      path: '/Polygon',
+      component: Polygon,
     },
   },
 ];

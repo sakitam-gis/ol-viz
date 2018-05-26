@@ -1,3 +1,14 @@
+function _drawLineString(context, coordinates, map) {
+  for (let i = 0; i < coordinates.length; i++) {
+    const pixel = map.getPixelFromCoordinate(coordinates[i]);
+    if (i === 0) {
+      context.moveTo(pixel[0], pixel[1]);
+    } else {
+      context.lineTo(pixel[0], pixel[1]);
+    }
+  }
+}
+
 function render(context, data, that) {
   const map = that.getMap();
   context.save();
@@ -6,30 +17,26 @@ function render(context, data, that) {
   context.lineWidth = that.options.lineWidth;
   context.strokeStyle = that.options.strokeStyle;
   context.stroke();
-  let i = 0, len = data.length; // eslint-disable-line
-  for (; i < len; i++) {
-    const properties = data[i].properties || {};
-    const { coordinates } = data[i].geometry;
-    for (let j = 0; j < coordinates.length; j++) {
-      const coords = map.getPixelFromCoordinate(coordinates[j]);
-      if (j === 0) {
-        context.moveTo(coords[0], coords[1]);
-      } else {
-        context.lineTo(coords[0], coords[1]);
+  for (let i = 0; i < data.length; i++) {
+    const item = data[i];
+    const { strokeStyle } = item.properties || {};
+    const { coordinates } = item.geometry;
+    const { type } = item.geometry;
+    context.save();
+    if (strokeStyle) {
+      context.strokeStyle = strokeStyle;
+    }
+    context.beginPath();
+    if (type === 'LineString') {
+      _drawLineString(context, coordinates, map);
+    } else if (type === 'MultiLineString') {
+      for (let j = 0; j < coordinates.length; j++) {
+        const LineString = coordinates[j];
+        _drawLineString(context, LineString, map);
       }
     }
-    if (properties.lineWidth) {
-      context.save();
-      context.lineWidth = that.options.lineWidth;
-      context.stroke();
-      context.restore();
-    }
-    if (properties.strokeStyle) {
-      context.save();
-      context.strokeStyle = that.options.strokeStyle;
-      context.stroke();
-      context.restore();
-    }
+    context.stroke();
+    context.restore();
   }
   context.restore();
 }

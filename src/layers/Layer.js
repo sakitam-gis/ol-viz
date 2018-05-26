@@ -5,6 +5,8 @@ import PointGlRender from '../render/Point/webgl'
 import PointRender from '../render/Point/canvas';
 import LineRender from '../render/Polyline/canvas';
 import LineGlRender from '../render/Polyline/webgl';
+import PolygonRender from '../render/Polygon/canvas';
+import PolygonGlRender from '../render/Polygon/webgl';
 import {
   createCanvas, clearRect, scaleCanvas,
   getDevicePixelRatio, createContext,
@@ -264,6 +266,14 @@ class Layer extends ImageLayer {
           LineGlRender(context, data, this);
         } else {
           LineRender(context, data, this);
+        }
+        break;
+      case 'Polygon':
+      case 'MultiPolygon':
+        if (this.get('context') === 'webgl') {
+          PointGlRender(context, data, this);
+        } else {
+          PolygonRender(context, data, this);
         }
         break;
       default:

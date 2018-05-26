@@ -1,7 +1,11 @@
 precision mediump float;
 
-varying vec4 v_texcoord;
-varying float v_opacity;
+uniform vec4 color;
+
+//float smoothStep(float x, float y) {
+//  return 1.0 / (1.0 + exp(50.0 * (x - y)));
+//}
+
 void main() {
-    gl_FragColor = v_texcoord * v_opacity;
+  gl_FragColor = color;
 }

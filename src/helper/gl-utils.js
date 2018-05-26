@@ -134,5 +134,6 @@ export {
   bindFramebuffer,
   bindTexture,
   createTexture,
+  calcMatrices,
   enableVertexAttrib,
 }
